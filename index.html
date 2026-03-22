@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camp Wyatt 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Permanent+Marker&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            night: {
+              950: '#0a0a1a',
+              900: '#111128',
+              800: '#1a1a3e',
+              700: '#252554',
+            },
+            sunset: {
+              300: '#ffd07a',
+              400: '#ffb347',
+              500: '#ff8c42',
+              600: '#e86f2a',
+            },
+            pine: {
+              800: '#1b3a2d',
+              700: '#245a40',
+              600: '#2d7a53',
+              500: '#38a169',
+            },
+            sky: {
+              400: '#63b3ed',
+              500: '#4299e1',
+            },
+            campfire: {
+              400: '#fc8181',
+              500: '#f56565',
+              600: '#e53e3e',
+            },
+            cream: '#fdf6e3',
+            sand: {
+              100: '#fef9ef',
+              200: '#fdf0d5',
+              300: '#f5deb3',
+            },
+          },
+          fontFamily: {
+            display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+            marker: ['"Permanent Marker"', 'cursive'],
+            body: ['"Inter"', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; }
+
+    .hero-bg {
+      background-image: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(10,10,26,0.7) 100%), url('1.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* Polka dot pattern */
+    .polka {
+      background-image: radial-gradient(circle, rgba(255,179,71,0.14) 6px, transparent 6px);
+      background-size: 50px 50px;
+    }
+    .polka-lg {
+      background-image: radial-gradient(circle, rgba(255,179,71,0.10) 6px, transparent 6px);
+      background-size: 50px 50px;
+    }
+
+    /* Cross-hatch pattern */
+    .crosshatch {
+      background-image:
+        repeating-linear-gradient(45deg, transparent, transparent 12px, rgba(255,255,255,0.03) 12px, rgba(255,255,255,0.03) 13px),
+        repeating-linear-gradient(-45deg, transparent, transparent 12px, rgba(255,255,255,0.03) 12px, rgba(255,255,255,0.03) 13px);
+    }
+
+    /* Topographic / wavy lines */
+    .topo {
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(56,161,105,0.07) 40px, rgba(56,161,105,0.07) 41px),
+        repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(56,161,105,0.07) 40px, rgba(56,161,105,0.07) 41px);
+    }
+
+    .gallery-item {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .gallery-item:hover {
+      transform: scale(1.03);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .warning-card {
+      border: 3px dashed #f56565;
+    }
+
+    @keyframes nudge {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+
+    @keyframes emojifall {
+      0% { transform: translateY(-60px) rotate(0deg); opacity: 0; }
+      5% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+    }
+    .bounce-slow {
+      animation: nudge 2.5s ease-in-out infinite;
+    }
+
+    .checklist li::before {
+      content: '☐ ';
+      font-size: 1.1em;
+    }
+    .checklist li.checked::before {
+      content: '☑ ';
+    }
+
+    .card-pop {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .card-pop:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    }
+  </style>
+  <script>history.scrollRestoration = 'manual';</script>
+</head>
+<body class="bg-night-950 text-cream" onload="window.scrollTo(0,0)">
+
+  <!-- Chug gif fixed bottom-left -->
+  <img src="chug.gif" alt="" class="fixed bottom-0 left-4 z-50 w-24 md:w-32 pointer-events-none" />
+  <img src="monkey.gif" alt="" class="fixed top-0 right-4 z-50 w-24 md:w-32 pointer-events-none" />
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section class="hero-bg min-h-screen flex flex-col justify-center items-center text-center px-6 relative overflow-hidden">
+    <!-- Emoji rain layer (behind text) -->
+    <div id="emojiRain" class="absolute inset-0 z-0 pointer-events-none overflow-hidden"></div>
+
+    <div class="relative z-10">
+      <p class="uppercase tracking-[0.35em] text-sunset-300 font-semibold text-sm md:text-base mb-4">You're Cordially Summoned To</p>
+      <h1 class="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold text-white leading-none tracking-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
+        CAMP<br>WYATT
+      </h1>
+      <p class="mt-6 text-xl sm:text-2xl md:text-3xl font-medium text-white/90">June 13 &ndash; 20, 2026</p>
+      <p class="mt-2 text-base sm:text-lg text-white/60">Alberta, Canada &middot; Deep in the Foothills</p>
+      <p class="mt-1 text-sm text-white/40 italic">Attendance is not optional.</p>
+      <a href="#details" class="mt-12 bounce-slow text-white/50 hover:text-sunset-400 transition-colors inline-block">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </a>
+    </div>
+
+    <script>
+      (function() {
+        const emojis = ['🏕️','🔥','🍺','🌲','⛺','🌿','🎶','🌙','🐻','🪵','🎯','🍖','🌌','🦌','🪓','🍻','🌳','🧭','⭐','💨','🍃','🧊','🎸','🥒','🌾'];
+        const container = document.getElementById('emojiRain');
+        function spawn() {
+          const el = document.createElement('span');
+          el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          const size = 18 + Math.random() * 30;
+          const dur = 3 + Math.random() * 5;
+          el.style.cssText = `
+            position:absolute;
+            top:-60px;
+            left:${Math.random()*100}%;
+            font-size:${size}px;
+            opacity:0;
+            animation:emojifall ${dur}s linear forwards;
+            pointer-events:none;
+            user-select:none;
+            filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+          `;
+          container.appendChild(el);
+          el.addEventListener('animationend', () => el.remove());
+        }
+        // Go absolutely wild
+        setInterval(spawn, 80);
+      })();
+    </script>
+  </section>
+
+  <!-- ═══════════════ THE DETAILS ═══════════════ -->
+  <section id="details" class="bg-pine-800 polka py-20 md:py-28 px-6">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="font-marker text-4xl md:text-5xl text-sunset-400 mb-12 text-center">The Lowdown</h2>
+
+      <!-- Feature image -->
+      <div class="mb-12 overflow-hidden rounded-2xl max-h-[400px] ring-2 ring-white/10 shadow-lg shadow-black/30">
+        <img src="2.png" alt="The campsite" class="w-full h-full object-cover" loading="lazy">
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- When -->
+        <div class="bg-night-900/80 border border-pine-600/30 rounded-xl p-8 text-center card-pop">
+          <div class="text-4xl mb-3">🗓️</div>
+          <h3 class="font-display text-xl font-bold text-white mb-2">When</h3>
+          <p class="text-cream/80 leading-relaxed">
+            <span class="text-sunset-300 font-semibold">Sat Jun 13</span> &ndash; <span class="text-sunset-300 font-semibold">Sat Jun 20</span><br>
+            One full week in the woods.
+          </p>
+        </div>
+        <!-- Where -->
+        <div class="bg-night-900/80 border border-pine-600/30 rounded-xl p-8 text-center card-pop">
+          <div class="text-4xl mb-3">📍</div>
+          <h3 class="font-display text-xl font-bold text-white mb-2">Where</h3>
+          <p class="text-cream/80 leading-relaxed">
+            <span class="text-sunset-300 font-semibold">Near Camp Worthington</span><br>
+            Alberta Foothills<br>
+            <a href="https://maps.app.goo.gl/P4w2CBzwZXdxo5FX7" target="_blank" rel="noopener noreferrer" class="underline decoration-sunset-500 underline-offset-2 hover:text-sunset-400 transition-colors">
+              Get Directions&nbsp;&rarr;
+            </a>
+          </p>
+        </div>
+        <!-- Vibe -->
+        <div class="bg-night-900/80 border border-pine-600/30 rounded-xl p-8 text-center card-pop">
+          <div class="text-4xl mb-3">🔥</div>
+          <h3 class="font-display text-xl font-bold text-white mb-2">The Vibe</h3>
+          <p class="text-cream/80 leading-relaxed">
+            Cold beers. Hot fires. Questionable decisions.<br>
+            No agenda, no boss, no pants policy.<br>
+            Just <span class="text-sunset-300 font-semibold">a week of chaos</span>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ OFF-GRID WARNING ═══════════════ -->
+  <section class="bg-night-950 crosshatch py-20 md:py-28 px-6">
+    <div class="max-w-5xl mx-auto">
+
+      <!-- Side-by-side: image + warning -->
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-stretch">
+        <div class="lg:col-span-2 overflow-hidden rounded-2xl hidden lg:block ring-2 ring-white/10 shadow-lg shadow-black/30">
+          <img src="3.png" alt="The wilderness" class="w-full h-full object-cover" loading="lazy">
+        </div>
+
+      <div class="lg:col-span-3 warning-card bg-night-900 rounded-2xl p-8 md:p-12">
+        <h2 class="font-marker text-3xl md:text-4xl text-campfire-500 mb-2 text-center">⚠️ Fair Warning</h2>
+        <p class="text-center text-cream/60 mb-10 text-lg">Just so nobody's surprised&hellip; it's rustic out here.</p>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div>
+            <div class="text-5xl mb-3">🔋</div>
+            <p class="font-bold text-white text-lg">No Power</p>
+            <p class="text-cream/50 text-sm mt-1">Charge up before you come</p>
+          </div>
+          <div>
+            <div class="text-5xl mb-3">💧</div>
+            <p class="font-bold text-white text-lg">No Water</p>
+            <p class="text-cream/50 text-sm mt-1">Bring every drop you need</p>
+          </div>
+          <div>
+            <div class="text-5xl mb-3">📡</div>
+            <p class="font-bold text-white text-lg">No Signal</p>
+            <p class="text-cream/50 text-sm mt-1">Tell people where you'll be</p>
+          </div>
+          <div>
+            <div class="text-5xl mb-3">🚽</div>
+            <p class="font-bold text-white text-lg">No Plumbing</p>
+            <p class="text-cream/50 text-sm mt-1">Pack a shovel, seriously</p>
+          </div>
+        </div>
+
+        <div class="mt-10 text-center">
+          <p class="text-cream/70 text-base md:text-lg max-w-2xl mx-auto">
+            You're heading deep into the Alberta foothills. The nearest town is a solid drive away. This is fully off-grid: no electricity, no running water, no cell service, no emergency services nearby. <span class="text-campfire-400 font-semibold">Pack like nobody's coming to save you.</span>
+          </p>
+        </div>
+      </div>
+      </div> <!-- /grid -->
+    </div>
+  </section>
+
+  <!-- ═══════════════ ACTIVITIES ═══════════════ -->
+  <section class="bg-pine-800 polka-lg py-20 md:py-28 px-6">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="font-marker text-4xl md:text-5xl text-sunset-400 mb-4 text-center">The Agenda</h2>
+      <p class="text-center text-cream/50 mb-12 text-lg">Just kidding, there's no agenda. But here's what's probably happening.</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-night-900/80 border border-pine-600/30 rounded-xl p-8 text-center card-pop">
+          <div class="text-5xl mb-4">🍺</div>
+          <h3 class="font-display text-xl font-bold text-white mb-2">Beer O'Clock</h3>
+          <p class="text-cream/70">Starts at arrival. Ends at departure. Bring more than you think you need. Then bring more.</p>
+        </div>
+        <div class="bg-night-900/80 border border-pine-600/30 rounded-xl p-8 text-center card-pop">
+          <div class="text-5xl mb-4">🌿</div>
+          <h3 class="font-display text-xl font-bold text-white mb-2">Herbal Refreshments</h3>
+          <p class="text-cream/70">It's outdoors, and it pairs beautifully with staring at the stars for 45 minutes straight.</p>
+        </div>
+        <div class="bg-night-900/80 border border-pine-600/30 rounded-xl p-8 text-center card-pop">
+          <div class="text-5xl mb-4">🔥</div>
+          <h3 class="font-display text-xl font-bold text-white mb-2">Campfires</h3>
+          <p class="text-cream/70">The kind you sit around until 3am solving all the world's problems. Bring wood or be roasted instead.</p>
+        </div>
+        <div class="bg-night-900/80 border border-pine-600/30 rounded-xl p-8 text-center card-pop">
+          <div class="text-5xl mb-4">🎵</div>
+          <h3 class="font-display text-xl font-bold text-white mb-2">Music</h3>
+          <p class="text-cream/70">Speakers, questionable sing-alongs. Wonderwall is banned. Everything else is fair game.</p>
+        </div>
+        <div class="bg-night-900/80 border border-pine-600/30 rounded-xl p-8 text-center card-pop">
+          <div class="text-5xl mb-4">🎯</div>
+          <h3 class="font-display text-xl font-bold text-white mb-2">Yard Games</h3>
+          <p class="text-cream/70">Cornhole, beer pong, KanJam, ladder toss. Bring whatever you've got. Competitive trash talk encouraged.</p>
+        </div>
+        <div class="bg-night-900/80 border border-pine-600/30 rounded-xl p-8 text-center card-pop">
+          <div class="text-5xl mb-4">🌌</div>
+          <h3 class="font-display text-xl font-bold text-white mb-2">Absolutely Nothing</h3>
+          <p class="text-cream/70">Hammock. Book. Nap. Repeat. Nobody's judging you for doing zero things. That's the whole point.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ PACKING LIST ═══════════════ -->
+  <section class="bg-night-950 topo py-20 md:py-28 px-6">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="font-marker text-4xl md:text-5xl text-sunset-400 mb-4 text-center">Pack It Right</h2>
+      <p class="text-center text-cream/50 mb-12 text-lg">The nearest store is a &ldquo;lol good luck&rdquo; drive away. Don't be that person.</p>
+
+      <!-- Two images above the list -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-12">
+        <div class="overflow-hidden rounded-2xl max-h-[260px] ring-2 ring-white/10 shadow-lg shadow-black/30">
+          <img src="4.png" alt="Camp adventure" class="w-full h-full object-cover" loading="lazy">
+        </div>
+        <div class="overflow-hidden rounded-2xl max-h-[260px] ring-2 ring-white/10 shadow-lg shadow-black/30">
+          <img src="5.png" alt="Wilderness views" class="w-full h-full object-cover" loading="lazy">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Shelter -->
+        <div class="bg-night-800 border border-night-700 rounded-xl p-6 card-pop">
+          <h3 class="font-display text-lg font-bold text-white mb-4">⛺ Shelter &amp; Sleep</h3>
+          <ul class="checklist space-y-2 text-cream/75">
+            <li>Tent (check the seams!)</li>
+            <li>Sleeping bag (rated for cold)</li>
+            <li>Sleeping pad or air mattress</li>
+            <li>Pillow</li>
+            <li>Extra tarp / ground sheet</li>
+          </ul>
+        </div>
+        <!-- Food & Drink -->
+        <div class="bg-night-800 border border-night-700 rounded-xl p-6 card-pop">
+          <h3 class="font-display text-lg font-bold text-white mb-4">🍖 Food &amp; Drink</h3>
+          <ul class="checklist space-y-2 text-cream/75">
+            <li>Cooler(s) with ice</li>
+            <li>All your food (for 7 days!)</li>
+            <li>Water (at least 4L per day)</li>
+            <li>Beer (see above, but more)</li>
+            <li>Cooking gear / utensils</li>
+            <li>Camp stove + fuel</li>
+          </ul>
+        </div>
+        <!-- Fire -->
+        <div class="bg-night-800 border border-night-700 rounded-xl p-6 card-pop">
+          <h3 class="font-display text-lg font-bold text-white mb-4">🔥 Fire &amp; Light</h3>
+          <ul class="checklist space-y-2 text-cream/75">
+            <li>Firewood + kindling</li>
+            <li>Lighter / fire starter</li>
+            <li>Headlamp (essential)</li>
+            <li>Lantern or string lights</li>
+            <li>Extra batteries</li>
+          </ul>
+        </div>
+        <!-- Comfort -->
+        <div class="bg-night-800 border border-night-700 rounded-xl p-6 card-pop">
+          <h3 class="font-display text-lg font-bold text-white mb-4">🧥 Clothing &amp; Comfort</h3>
+          <ul class="checklist space-y-2 text-cream/75">
+            <li>Warm layers (it gets COLD)</li>
+            <li>Rain jacket</li>
+            <li>Camp chair</li>
+            <li>Bug spray</li>
+            <li>Sunscreen</li>
+          </ul>
+        </div>
+        <!-- Safety -->
+        <div class="bg-night-800 border border-night-700 rounded-xl p-6 card-pop">
+          <h3 class="font-display text-lg font-bold text-white mb-4">🩹 Safety</h3>
+          <ul class="checklist space-y-2 text-cream/75">
+            <li>First aid kit</li>
+            <li>Bear spray</li>
+            <li>Toilet paper + shovel</li>
+            <li>Garbage bags (pack it out!)</li>
+          </ul>
+        </div>
+        <!-- Fun -->
+        <div class="bg-night-800 border border-night-700 rounded-xl p-6 card-pop">
+          <h3 class="font-display text-lg font-bold text-white mb-4">🎲 Fun Stuff</h3>
+          <ul class="checklist space-y-2 text-cream/75">
+            <li>Cornhole / beer pong / games</li>
+            <li>Speaker (fully charged!)</li>
+            <li>Hammock</li>
+            <li>Your finest herbal selections 🌿</li>
+            <li>An ego you're okay with losing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ MAP ═══════════════ -->
+  <section class="bg-pine-800 polka py-20 md:py-28 px-6">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="font-marker text-4xl md:text-5xl text-sunset-400 mb-4 text-center">Find Us</h2>
+      <p class="text-center text-cream/50 mb-10 text-lg">Screenshot this now. Your phone will be a fancy paperweight out there.</p>
+
+      <div class="rounded-2xl overflow-hidden border-2 border-pine-600/40">
+        <iframe
+          src="https://maps.google.com/maps?q=52.053833,-115.0553131&t=k&z=13&ie=UTF8&iwloc=&output=embed"
+          width="100%"
+          height="450"
+          style="border:0;"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Campsite location">
+        </iframe>
+      </div>
+
+      <div class="mt-8 text-center">
+        <a href="https://maps.app.goo.gl/P4w2CBzwZXdxo5FX7"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="inline-block bg-sunset-500 hover:bg-sunset-600 text-white font-bold text-lg px-8 py-4 rounded-xl transition-colors">
+          Open in Google Maps &nbsp;&rarr;
+        </a>
+        <p class="text-cream/40 text-sm mt-4">52.0538&deg; N, 115.0553&deg; W &middot; Alberta Foothills</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FINAL CTA ═══════════════ -->
+  <section class="bg-night-950 crosshatch py-20 md:py-28 px-6 text-center">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-6xl md:text-8xl mb-6">🏕️</p>
+      <h2 class="font-marker text-4xl md:text-5xl text-white mb-4">See You Out There</h2>
+      <p class="text-cream/60 text-lg md:text-xl leading-relaxed max-w-xl mx-auto">
+        Book the time off, load the truck, and bring enough beer to make friends with everyone.
+      </p>
+      <p class="mt-8 text-sunset-400 font-display text-2xl md:text-3xl font-bold">Camp Wyatt</p>
+      <p class="mt-2 text-sunset-400 font-display text-xl md:text-2xl">June 13 &ndash; 20, 2026</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="bg-night-950 border-t border-night-800 py-8 px-6 text-center">
+    <p class="text-cream/30 text-sm">Camp Wyatt 2026 &middot; Leave no trace &middot; Pack it in, pack it out &middot; What happens at camp stays at camp</p>
+  </footer>
+
+</body>
+</html>
